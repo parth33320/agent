@@ -1,0 +1,59 @@
+name: Sync All Repositories
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday at 06:00 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/layers.md'
+      - 'docs/checklist.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'GLOSSARY.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests google-generativeai
+
+      - name: Run multi-repo sync
+        env:
+          AGENT_REPO_TOKEN: ${{ secrets.AGENT_REPO_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/sync_all_repos.py
+
+      - name: Commit aggregated 12-layer scores if updated
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -f "docs/all-repos-layer-scores.md" ]; then
+            git add docs/all-repos-layer-scores.md docs/repo-classifications.json
+            if ! git diff --staged --quiet; then
+              git commit -m "docs: aggregate multi-repo 12-layer scores"
+              git push origin main
+            else
+              echo "No score changes to commit."
+            fi
+          fi

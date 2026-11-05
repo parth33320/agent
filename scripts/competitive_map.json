@@ -1,0 +1,15 @@
+{
+  "supply-chain": ["servicenow.com", "sap.com", "salesforce.com"],
+  "hr": ["workday.com", "bamboohr.com", "rippling.com"],
+  "finance": ["bloomberg.com", "plaid.com", "stripe.com"],
+  "healthcare": ["epic.com", "athenahealth.com", "veeva.com"],
+  "e-commerce": ["shopify.com", "bigcommerce.com", "salesforce.com"],
+  "devtools": ["github.com", "linear.app", "vercel.com"],
+  "education": ["canvas.instructure.com", "coursera.org", "notion.so"],
+  "real-estate": ["zillow.com", "costar.com", "yardi.com"],
+  "legal": ["clio.com", "westlaw.com", "docusign.com"],
+  "marketing": ["hubspot.com", "marketo.com", "klaviyo.com"],
+  "social": ["discord.com", "slack.com", "twitter.com"],
+  "gaming": ["unity.com", "unrealengine.com", "steam.com"],
+  "other": []
+}
