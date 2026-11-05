@@ -1,0 +1,38 @@
+name: Score 12 Layers
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run 12-layer scoring script
+        run: |
+          python scripts/score_12_layers.py
+
+      - name: Commit and push score report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/12-layers-status.md
+          if git diff --staged --quiet; then
+            echo "No changes in 12-layers-status.md to commit."
+          else
+            git commit -m "docs: update 12-layers status report"
+            git push origin main
+          fi
